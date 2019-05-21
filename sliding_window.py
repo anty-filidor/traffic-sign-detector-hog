@@ -88,10 +88,10 @@ class SlidingWindow:
 
         return vertex_a, vertex_b
 
-    def perform(self, only_roi=True, track_progress=False):
+    def perform(self, mark_on_image=True, track_progress=False):
         """
         This method performs detection
-        :param only_roi: if true don't decorate given image
+        :param mark_on_image: if true don't decorate given image
         :param track_progress: if true tracks progress of classification
         :return: tuple with image (decorated or not) and np.array of ROI coordinates
         """
@@ -100,7 +100,7 @@ class SlidingWindow:
             detection = self.object_detector.classify(window)
             if detection == 1:
                 win_coord = self.reverse_pyramid(layer_shape, x, y)
-                if only_roi:
+                if mark_on_image:
                     cv2.rectangle(self.image, win_coord[0], win_coord[1], (0, i, 255 - i), int(0.01*i)+1)
                 self.rois.append(win_coord)
 
@@ -111,6 +111,7 @@ class SlidingWindow:
 
         return self.image, np.array(self.rois)
 
-    def update_frame(self):
-        pass
+    def update_frame(self, image):
+        self.image = image
+        # self.object_detector.image = image
 

@@ -10,7 +10,7 @@ class ObjectDetector:
     def __init__(self, image, svc_path, scaler_path, hog_parameters=None):
 
         if svc_path is None or scaler_path is None:
-            self.classifier = None # zmienić to póżniej!!!!!!!!!!
+            self.classifier = None  # zmienić to póżniej!!!!!!!!!!
         self.classifier = SVC(joblib.load(svc_path), joblib.load(scaler_path))
 
         self.image = image
@@ -29,7 +29,9 @@ class ObjectDetector:
     def demonstration(self, image=None):
         if image is not None:
             self.image = image
-        f = self.HOG.features(self.image)
+            f = self.HOG.features(self.image)
+        else:
+            f = self.HOG.features()
         print("feature shape:", f.shape)
         rgb_img, a_img, b_img, c_img = self.HOG.visualize()
         helpers.show_images([rgb_img, a_img, b_img, c_img], per_row=4, per_col=1, W=20, H=4)
@@ -38,7 +40,9 @@ class ObjectDetector:
     def classify(self, image=None):
         if image is not None:
             self.image = image
-        f = self.HOG.features(self.image)
+            f = self.HOG.features(self.image)
+        else:
+            f = self.HOG.features()
         return self.classifier.predict(f)
 
 
