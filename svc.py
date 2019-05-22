@@ -20,5 +20,6 @@ class SVC:
         """
         f = self.scaler.transform([f])
         r = self.svc.predict(f)
+        # print(type(r), len(r), '\n', r, '\n',)
         return np.int(r[0])
 
