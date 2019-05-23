@@ -55,36 +55,6 @@ def show_images(imgs, per_row=3, per_col=2, W=10, H=5, tdpi=80):
         ax[i].axis('off')
     plt.show()
 
-"""
-DO POPRAWY CHYBA!!!!!!!!
-"""
-def box_boundaries(box):
-    """
-    This function gives back coordinates of bounding box
-    :param box:
-    :return: coordinates of bounding box
-    """
-    x1, y1 = box[0], box[1]
-    x2, y2 = box[1] + box[2], box[1] + box[2]  # box[0]
-    return x1, y1, x2, y2
-
-
-def put_boxes(frame, boxes, color=(255, 0, 0), thickness=10):
-    """
-    This function writes out a bounding box on the image
-    :param frame: frame of video or just image
-    :param boxes: region of interest
-    :param color: color of bounding box
-    :param thickness: thickness of bounding box
-    :return: image with bounding box
-    """
-    out_img = frame.copy()
-    for box in boxes:
-        x1, y1, x2, y2 = box_boundaries(box)
-        cv2.rectangle(out_img, (x1, y1), (x2, y2), color, thickness)
-
-    return out_img
-
 
 def print_executed():
     """

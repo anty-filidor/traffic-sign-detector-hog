@@ -7,27 +7,21 @@ from tqdm import tqdm
 from termcolor import colored
 import pickle
 
-#my_image = cv2.imread("/Users/michal/PycharmProjects/HOG_TSR/dataset/image.jpg")
-#my_image = cv2.imread("/Users/michal/PycharmProjects/HOG_TSR/dataset/test_images/test_5.jpg")
-# cv2.imshow("Image", my_image)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
-
 
 def test_on_images():
-    print(colored("Starting processing images", 'red'))
+    print(colored("Starting processing images\n", 'red'))
 
     # create sliding window object
     sliding_window_parameters = {
-        'x_win_len': 200,
-        'y_win_len': 200,
-        'x_increment': 100,
-        'y_increment': 100,
+        'x_win_len': 130,
+        'y_win_len': 130,
+        'x_increment': 90,
+        'y_increment': 90,
         'svc_path': 'trained_models/SVC_2019521.pkl',
         'scaler_path': 'trained_models/scaler_2019521.pkl'
     }
     sw = SlidingWindow(sliding_window_parameters)
-    print(colored("Created SlidingWindow object", 'red'))
+    print(colored("Created SlidingWindow object\n", 'red'))
 
     # create directories to images
     path_to_test_images_dir = './dataset/test_images/'
