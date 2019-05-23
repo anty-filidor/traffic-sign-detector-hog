@@ -138,23 +138,24 @@ class SlidingWindow:
         """
         for(img_layer, x, y, window, layer_shape) in self._sliding_window_prec():
             i = 255 * layer_shape[0] / self._image.shape[0]
-            detection = self._object_detector.classify(window)
-            if detection != 0:
+            label, confidence = self._object_detector.classify(window)
+            if label != 0:
                 win_coord = self._reverse_pyramid(layer_shape, x, y)
                 if mark_on_image:
                     # mark ROI
+                    text = self._label_names[0] + ' {}%'.format(round(confidence*100, 2))
                     cv2.rectangle(self._image, (win_coord[0], win_coord[1]), (win_coord[2], win_coord[3]),
                                   (0, i, 255 - i), int(0.01*i) + 1)
                     # prepare background for label
-                    size = cv2.getTextSize(self._label_names[0], cv2.FONT_HERSHEY_SIMPLEX, .7, 1)
+                    size = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, .7, 1)
                     cv2.rectangle(self._image, (win_coord[0], win_coord[1]),
-                                  (win_coord[0] + size[0][0], win_coord[1] - size[0][1]), (0, i, 255 - i), -1)
+                                  (win_coord[0] + size[0][0], win_coord[1] + size[0][1]), (0, i, 255 - i), -1)
                     # write a label name
-                    cv2.putText(self._image, self._label_names[0], (win_coord[0], win_coord[1]),
+                    cv2.putText(self._image, text, (win_coord[0], win_coord[1] + size[0][1]),
                                 cv2.FONT_HERSHEY_SIMPLEX, .7, (0, 0, 0), lineType=cv2.LINE_AA)
                 self._pred_bboxes.append(win_coord)
-                self._pred_classes.append(int(detection))
-                self._confidences.append(0.965)  # zmienić na prewdziwą confidence
+                self._pred_classes.append(int(label))
+                self._confidences.append(confidence)
 
             if track_progress:
                 cv2.rectangle(img_layer, (x, y), (x + self._x_win_len, y + self._y_win_len), (0, 255, 0), 2)

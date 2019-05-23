@@ -17,8 +17,8 @@ def test_on_images():
         'y_win_len': 130,
         'x_increment': 90,
         'y_increment': 90,
-        'svc_path': 'trained_models/SVC_2019521.pkl',
-        'scaler_path': 'trained_models/scaler_2019521.pkl'
+        'svc_path': 'trained_models/SVC_2019523.pkl',
+        'scaler_path': 'trained_models/scaler_2019523.pkl'
     }
     sw = SlidingWindow(sliding_window_parameters)
     print(colored("Created SlidingWindow object\n", 'red'))
@@ -37,7 +37,7 @@ def test_on_images():
     detections_output_result = []
 
     # process all images in folder
-    print(colored("Processing:", 'red'))
+    print(colored("Processing:\n", 'red'))
     for image_path in tqdm(test_image_paths):
 
         name = image_path.split('/')[3]
