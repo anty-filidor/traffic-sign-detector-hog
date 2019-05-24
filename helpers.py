@@ -38,7 +38,7 @@ def convert(frame, src_model="rgb", dest_model="hls"):
 
 def show_images(imgs, per_row=3, per_col=2, W=10, H=5, tdpi=80):
     """
-    This function plots images
+    This function plots images. It is used in printing HOG features visualisation
     :param imgs: array of images
     :param per_row: num of images per row
     :param per_col: num of images per column

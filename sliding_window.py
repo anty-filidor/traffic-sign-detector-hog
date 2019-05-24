@@ -175,6 +175,14 @@ class SlidingWindow:
         self._pred_classes = []
         self._confidences = []
 
+    def generate_slices(self):
+        """
+        This method generates only slices of the image. It is used for training a classifier
+        :return: slice of given image
+        """
+        for (_, _, _, window, _) in self._sliding_window_fast():
+            yield window
+
 
 '''
 sliding_window_parameters = {
