@@ -21,4 +21,4 @@ class SVC:
         y_pred_proba = self.svc.predict_proba(features)
         label = np.argmax(y_pred_proba, axis=1)
         proba = np.float(y_pred_proba[0][label])
-        return label, proba
+        return int(label), proba

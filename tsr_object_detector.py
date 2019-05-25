@@ -23,21 +23,23 @@ class ObjectDetector:
             self.classifier = SVC(joblib.load(svc_path), joblib.load(scaler_path))
 
         if hog_parameters is None:
-            hog_parameters = {
+            self._hog_parameters = {
                 'color_model': 'hsv',  # hls, hsv, yuv, ycrcb
                 'svc_input_size': 64,  #
                 'number_of_orientations': 11,  # 6 - 12
                 'pixels_per_cell': 16,  # 8, 16
                 'cells_per_block': 2,  # 1, 2
-                'do_transform_sqrt': True,
+                'do_transform_sqrt': True
             }
+        else:
+            self._hog_parameters = hog_parameters
 
         if image is None:
             self.image = None
-            self.HOG = HOGExtractor(hog_parameters)
+            self.HOG = HOGExtractor(self._hog_parameters)
         else:
             self.image = image
-            self.HOG = HOGExtractor(hog_parameters, self.image)
+            self.HOG = HOGExtractor(self._hog_parameters, self.image)
 
     def demonstration(self, image=None):
         """

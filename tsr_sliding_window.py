@@ -7,19 +7,20 @@ import numpy as np
 
 class SlidingWindow:
 
-    def __init__(self, parameters, image=None):
+    def __init__(self, parameters, image=None, binary_detection=False):
+
         """
         This method creates sliding window within SVC performs classification.
         :param parameters: dictionary with parameters:
-            image - source image
             x_win_len - length in x axis of sliding window in pixels
             y_win_len - length in y axis of sliding window in pixels
             x_increment - increment in x axis of sliding window in pixels
             y_increment - increment in x axis of sliding window in pixels
             svc_path - path to supported vector classifier
             scaler_path - path to scaler for SVC
+        :param image: image to be processed
+        :param binary_detection: this parameter implicates mode of classification
         """
-
         if image is None:
             self._image = None
             self._object_detector = ObjectDetector(parameters['svc_path'], parameters['scaler_path'])
@@ -36,9 +37,11 @@ class SlidingWindow:
         self._pred_classes = []
         self._confidences = []
 
-        self._label_names = ['sign']
-
-        # DODAĆ WYCZTYWANIE LABELI KLAS!£!!!
+        if binary_detection is True:
+            self._label_names = ['sign']
+        else:
+            self._label_names = ['no sign', 'warning', 'prohibitory', 'mandatory', 'informational']
+            #                     0,        1-a,        2-b,            3-c,        4-d
 
     def _image_pyramids(self):
         """
@@ -142,8 +145,8 @@ class SlidingWindow:
             if label != 0:
                 win_coord = self._reverse_pyramid(layer_shape, x, y)
                 if mark_on_image:
-                    # mark ROI
-                    text = self._label_names[0] + ' {}%'.format(round(confidence*100, 2))
+                    # mark ROI on image
+                    text = self._label_names[label] + ' {}%'.format(round(confidence*100, 2))
                     cv2.rectangle(self._image, (win_coord[0], win_coord[1]), (win_coord[2], win_coord[3]),
                                   (0, i, 255 - i), int(0.01*i) + 1)
                     # prepare background for label

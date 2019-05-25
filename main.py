@@ -26,6 +26,7 @@ def test_on_images():
     # create directories to images
     path_to_test_images_dir = './dataset/test_images/'
     path_to_output_images_dir = path_to_test_images_dir + 'output/'
+    # path_to_test_images_dir = '/Users/michal/Tensorflow/datasets/GTSDB/'
     test_image_paths = glob.glob(path_to_test_images_dir + '*.jpg')
 
     # if there is no folder "output" create it
@@ -38,9 +39,10 @@ def test_on_images():
 
     # process all images in folder
     print(colored("Processing:\n", 'red'))
-    for image_path in tqdm(test_image_paths):
+    for image_path in tqdm(test_image_paths):  # [:15]):
 
         name = image_path.split('/')[3]
+        # name = image_path.split('/')[6]
         image = cv2.imread(image_path)
 
         sw.update_frame(image)
@@ -68,6 +70,7 @@ def test_on_images():
 
     with open(path_to_output_images_dir + 'sliding_windows_params.txt', 'w') as f:
         f.write(str(sliding_window_parameters))
+        f.write(str(sw._object_detector._hog_parameters))
         f.close()
 
 
