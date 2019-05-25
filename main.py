@@ -1,5 +1,5 @@
 import cv2
-from sliding_window import SlidingWindow
+from tsr_sliding_window import SlidingWindow
 import glob
 import subprocess
 import os
@@ -13,12 +13,12 @@ def test_on_images():
 
     # create sliding window object
     sliding_window_parameters = {
-        'x_win_len': 130,
-        'y_win_len': 130,
-        'x_increment': 90,
-        'y_increment': 90,
-        'svc_path': 'trained_models/SVC_2019523.pkl',
-        'scaler_path': 'trained_models/scaler_2019523.pkl'
+        'x_win_len': 70,
+        'y_win_len': 70,
+        'x_increment': 50,
+        'y_increment': 50,
+        'svc_path': 'trained_models/SVC_2019525.pkl',
+        'scaler_path': 'trained_models/scaler_2019525.pkl'
     }
     sw = SlidingWindow(sliding_window_parameters)
     print(colored("Created SlidingWindow object\n", 'red'))
@@ -64,6 +64,11 @@ def test_on_images():
     # Pickle the 'detections_output_result' list using the highest protocol available.
     with open(path_to_output_images_dir + 'detections_output_result.pkl', 'wb') as f:
         pickle.dump(detections_output_result, f, pickle.HIGHEST_PROTOCOL)
+        f.close()
+
+    with open(path_to_output_images_dir + 'sliding_windows_params.txt', 'w') as f:
+        f.write(str(sliding_window_parameters))
+        f.close()
 
 
 test_on_images()

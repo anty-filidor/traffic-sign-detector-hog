@@ -1,7 +1,7 @@
 import cv2
 from skimage import transform
 from termcolor import colored
-from object_detector import ObjectDetector
+from tsr_object_detector import ObjectDetector
 import numpy as np
 
 

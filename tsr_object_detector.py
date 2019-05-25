@@ -1,5 +1,5 @@
-from svc import SVC
-from hog_extractor import HOGExtractor
+from tsr_svc import SVC
+from tsr_hog_extractor import HOGExtractor
 import cv2
 import helpers
 import warnings

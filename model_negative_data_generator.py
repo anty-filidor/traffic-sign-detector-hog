@@ -1,6 +1,6 @@
 import cv2
 import pandas as pd
-from sliding_window import SlidingWindow
+from tsr_sliding_window import SlidingWindow
 from tqdm import tqdm
 import glob
 
