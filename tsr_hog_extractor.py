@@ -1,5 +1,5 @@
 from skimage.feature import hog
-from helpers import convert
+from tsr_helpers import convert
 import numpy as np
 import cv2
 
@@ -45,14 +45,14 @@ class HOGExtractor:
                                 cells_per_block=self._cpb,
                                 transform_sqrt=self._do_sqrt,
                                 visualize=True,
-                                feature_vector=False,
+                                feature_vector=True,
                                 block_norm='L1')
         return features, hog_img
 
     def _new_frame(self, frame):
         """
         This function calulates HOG and its visualisation of given frame
-        :param frame: new image (if passed)
+        :param frame: new image
         """
         frame = cv2.resize(frame, (self.svc_input_size, self.svc_input_size))
         self.RGB_img = frame
@@ -72,7 +72,12 @@ class HOGExtractor:
         if frame is not None:
             self._new_frame(frame)
 
-        return np.hstack((self._hogA.ravel(), self._hogB.ravel(), self._hogC.ravel()))
+        # perform normalisation 0:1 of histogram
+        stacked_features = np.hstack((self._hogA.ravel(), self._hogB.ravel(), self._hogC.ravel()))
+        if np.amax(stacked_features) > 0:
+            stacked_features = stacked_features / np.amax(stacked_features)
+
+        return stacked_features
 
     def visualize(self):
         """
@@ -82,7 +87,7 @@ class HOGExtractor:
         return self.RGB_img, self._hogA_img, self._hogB_img, self._hogC_img
 
 '''
-hog_parameters = {
+get_hog_parameters = {
     'color_model': 'hsv',  # hls, hsv, yuv, ycrcb
     'svc_input_size': 64,  #
     'number_of_orientations': 11,  # 6 - 12
@@ -92,6 +97,6 @@ hog_parameters = {
 }
 
 my_image = cv2.imread("/Users/michal/PycharmProjects/HOG_TSR/dataset/test_images/test_5.jpg")
-he = HOGExtractor(hog_parameters)
+he = HOGExtractor(get_hog_parameters)
 print(he.features())
 '''

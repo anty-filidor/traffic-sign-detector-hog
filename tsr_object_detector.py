@@ -1,9 +1,10 @@
 from tsr_svc import SVC
 from tsr_hog_extractor import HOGExtractor
 import cv2
-import helpers
+import tsr_helpers
 import warnings
 from sklearn.externals import joblib
+from tsr_helpers import get_hog_parameters
 
 
 class ObjectDetector:
@@ -23,14 +24,7 @@ class ObjectDetector:
             self.classifier = SVC(joblib.load(svc_path), joblib.load(scaler_path))
 
         if hog_parameters is None:
-            self._hog_parameters = {
-                'color_model': 'hsv',  # hls, hsv, yuv, ycrcb
-                'svc_input_size': 64,  #
-                'number_of_orientations': 11,  # 6 - 12
-                'pixels_per_cell': 16,  # 8, 16
-                'cells_per_block': 2,  # 1, 2
-                'do_transform_sqrt': True
-            }
+            self._hog_parameters = get_hog_parameters()
         else:
             self._hog_parameters = hog_parameters
 
@@ -58,7 +52,7 @@ class ObjectDetector:
                                                   " then perform classification.")
         print("feature shape:", f.shape)
         rgb_img, a_img, b_img, c_img = self.HOG.visualize()
-        helpers.show_images([rgb_img, a_img, b_img, c_img], per_row=4, per_col=1, W=20, H=4)
+        tsr_helpers.show_images([rgb_img, a_img, b_img, c_img], per_row=4, per_col=1, W=20, H=4)
         print(self.classifier.predict(f))
 
     def classify(self, image=None):

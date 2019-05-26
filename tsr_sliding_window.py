@@ -38,17 +38,20 @@ class SlidingWindow:
         self._confidences = []
 
         if binary_detection is True:
-            self._label_names = ['sign']
+            self._label_names = ['no sign', 'sign']
         else:
             self._label_names = ['no sign', 'warning', 'prohibitory', 'mandatory', 'informational']
             #                     0,        1-a,        2-b,            3-c,        4-d
+
+        self._downscale_for_pyramid = parameters['downscale_for_pyramid']
 
     def _image_pyramids(self):
         """
         This method generates image pyramid of self.image.
         :return: layer in pyramid of the images and its shape
         """
-        for (i, resized) in enumerate(transform.pyramid_gaussian(self._image, downscale=1.5, multichannel=True)):
+        for (i, resized) in enumerate(transform.pyramid_gaussian(self._image, downscale=self._downscale_for_pyramid,
+                                                                 multichannel=True)):
             # if produced layer is smaller than size of window - break
             if resized.shape[0] < self._x_win_len or resized.shape[1] < self._y_win_len:
                 break

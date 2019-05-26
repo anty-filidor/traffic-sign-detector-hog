@@ -149,3 +149,18 @@ def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None,
 
     plt.legend(loc="best")
     return plt
+
+
+def get_hog_parameters():
+    """
+    This method returns global parameters for HOG descriptor
+    :return: parameters of HOG descriptor
+    """
+    return {
+        'color_model': 'hsv',  # hls, hsv, yuv, ycrcb
+        'svc_input_size': 40,
+        'number_of_orientations': 10,  # 6 - 12
+        'pixels_per_cell': 8,
+        'cells_per_block': 5,
+        'do_transform_sqrt': True
+    }

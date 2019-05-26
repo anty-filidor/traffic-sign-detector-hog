@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class SVC:
 
     def __init__(self, svc, scaler):

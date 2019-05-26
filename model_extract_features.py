@@ -4,23 +4,7 @@ import cv2
 import glob
 from tqdm import tqdm
 import pandas as pd
-
-# Initialise HOG extractor. Note, that its parameters should be equal for features of all sign types which are being
-# used in SVM training.
-hog_parameters = {
-    'color_model': 'hsv',  # hls, hsv, yuv, ycrcb
-    'svc_input_size': 64,
-    'number_of_orientations': 11,  # 6 - 12
-    'pixels_per_cell': 16,  # 8, 16
-    'cells_per_block': 2,  # 1, 2
-    'do_transform_sqrt': True,
-}
-extractor = HOGExtractor(parameters=hog_parameters)
-
-# read file which describe types of signs and select its language
-sign_description = pd.read_csv('dataset/sign_types.csv', delimiter=';')
-sign_description = sign_description.drop('opis', axis=1)
-print(sign_description.head(5), '\n')
+from tsr_helpers import get_hog_parameters
 
 
 def extract_positive_features(type_of_signs, extractor):
@@ -56,7 +40,7 @@ def extract_positive_features(type_of_signs, extractor):
             row = (csv.loc[csv['Filename'] == name]).values.tolist()
             # read image and cut ROI with traffic sign, then add to list
             image = cv2.imread(path)
-            if image.shape[0] >= 35 or image.shape[1] >= 35:
+            if image.shape[0] >= 25 or image.shape[1] >= 25:
                 image = image[row[0][3]:row[0][5], row[0][4]:row[0][6]]
                 positive_images.append(image)
 
@@ -94,7 +78,7 @@ def extract_negative_features(folder, extractor):
     for path in tqdm(paths):
         # read image
         image = cv2.imread(path)
-        if image.shape[0] >= 35 or image.shape[1] >= 35:
+        if image.shape[0] >= 25 or image.shape[1] >= 25:
             negative_images.append(image)
 
     negative_images = np.asarray(negative_images)
@@ -113,12 +97,23 @@ def extract_negative_features(folder, extractor):
 
     print("\nAll done for class: {}!\n".format(folder))
 
-'''
+
+# Initialise HOG extractor. Note, that its parameters should be equal for features of all sign types which are being
+# used in SVM training.
+extractor = HOGExtractor(get_hog_parameters())
+
+# read file which describe types of signs and select its language
+sign_description = pd.read_csv('dataset/sign_types.csv', delimiter=';')
+sign_description = sign_description.drop('opis', axis=1)
+print(sign_description.head(5), '\n')
+
+
 types_of_signs = ['a', 'b', 'c', 'd']
 for group in types_of_signs:
     extract_positive_features(group, extractor)
-'''
 
+'''
 folders = ['road', 'KITTI_extracted']
 for folder in folders:
     extract_negative_features(folder, extractor)
+'''

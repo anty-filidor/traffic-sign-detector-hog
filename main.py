@@ -13,36 +13,37 @@ def test_on_images():
 
     # create sliding window object
     sliding_window_parameters = {
-        'x_win_len': 70,
-        'y_win_len': 70,
-        'x_increment': 50,
-        'y_increment': 50,
-        'svc_path': 'trained_models/SVC_2019525.pkl',
-        'scaler_path': 'trained_models/scaler_2019525.pkl'
+        'x_win_len': 40,
+        'y_win_len': 40,
+        'x_increment': 40,
+        'y_increment': 40,
+        'svc_path': 'trained_models/SVC_2019527.pkl',
+        'scaler_path': 'trained_models/scaler_2019527.pkl',
+        'downscale_for_pyramid': 1.1
     }
-    sw = SlidingWindow(sliding_window_parameters)
+    sw = SlidingWindow(sliding_window_parameters, binary_detection=True)
     print(colored("Created SlidingWindow object\n", 'red'))
 
     # create directories to images
     path_to_test_images_dir = './dataset/test_images/'
     path_to_output_images_dir = path_to_test_images_dir + 'output/'
-    # path_to_test_images_dir = '/Users/michal/Tensorflow/datasets/GTSDB/'
-    test_image_paths = glob.glob(path_to_test_images_dir + '*.jpg')
+    path_to_test_images_dir = '/Users/michal/Tensorflow/datasets/GTSDB/'
+    test_image_paths = glob.glob(path_to_test_images_dir + '*.ppm')
 
     # if there is no folder "output" create it
     if not os.path.exists(path_to_output_images_dir):
         subprocess.run(['mkdir', path_to_output_images_dir])
-        print(colored(("Created directory: " + path_to_output_images_dir), 'red'))
+        print(colored(("Created directory: {}\n".format(path_to_output_images_dir)), 'red'))
 
     # cerate list for output logs to further MAP (or IoU) calculation
     detections_output_result = []
 
     # process all images in folder
     print(colored("Processing:\n", 'red'))
-    for image_path in tqdm(test_image_paths):  # [:15]):
+    for image_path in tqdm(test_image_paths[:20]):
 
-        name = image_path.split('/')[3]
-        # name = image_path.split('/')[6]
+        # name = image_path.split('/')[3]
+        name = image_path.split('/')[6]
         image = cv2.imread(image_path)
 
         sw.update_frame(image)
