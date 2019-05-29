@@ -13,13 +13,13 @@ def test_on_images():
 
     # create sliding window object
     sliding_window_parameters = {
-        'x_win_len': 40,
-        'y_win_len': 40,
+        'x_win_len': 60,
+        'y_win_len': 60,
         'x_increment': 40,
         'y_increment': 40,
         'svc_path': 'trained_models/SVC_2019527.pkl',
         'scaler_path': 'trained_models/scaler_2019527.pkl',
-        'downscale_for_pyramid': 1.1
+        'downscale_for_pyramid': 1.3
     }
     sw = SlidingWindow(sliding_window_parameters, binary_detection=True)
     print(colored("Created SlidingWindow object\n", 'red'))
