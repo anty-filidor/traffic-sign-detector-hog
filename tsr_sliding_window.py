@@ -178,8 +178,9 @@ class SlidingWindow:
             # delete all indexes from the index list that have
             indices = np.delete(indices, np.concatenate(([last], np.where(overlap > overlapping_threshold)[0])))
 
-        # save in _pred_bboxes only rois, which were picked
+        # save in _pred_bboxes only rois, which were picked do it also for class labels
         self._pred_bboxes = self._pred_bboxes[pick].astype("int")
+        self._pred_classes = [self._pred_classes[i] for i in pick]
 
     def _mark_on_image(self):
         """
