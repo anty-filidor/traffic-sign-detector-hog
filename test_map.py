@@ -1,3 +1,11 @@
+"""
+This script is fully based on evaluation method proposed by ÁlvaroArcos-GarcíaJuan A.Álvarez-GarcíaLuis M.Soria-Morillo
+as an attachment to the paper: "Evaluation of deep neural networks for traffic sign detection systems"
+Below link to full repository of the project:
+https://github.com/aarcosg/traffic-sign-detection#running-on-new-images
+"""
+
+
 import matplotlib.pyplot as plt
 from itertools import cycle
 import numpy as np
@@ -5,22 +13,14 @@ import pandas as pd
 import copy
 
 
-def filter_detections_by_width1(detections, min_w, max_w):
-    print(min_w, max_w, len(detections))
-    fdetects = []
-    for d in detections:
-        img_indices = []
-        for i, bbox in enumerate(d['gt_bboxes']):
-            w = bbox[2] - bbox[0]
-            if w > min_w and w <= max_w:
-                img_indices.append(i)
-                print("Tak!")
-        img_filtred = [d[i] for i in img_indices]
-    fdetects.append(img_filtred)
-    return fdetects
-
-
 def filter_detections_by_width(detections, min_w, max_w):
+    """
+    This method filters detections by given width and saves gt bboxes, which applies to given boundaries
+    :param detections: list of detections
+    :param min_w: minimum width
+    :param max_w: maximum width
+    :return: filtered list of detections
+    """
     print(min_w, max_w)
     fdetects = []
     n_gt_bboxes = 0
@@ -32,15 +32,10 @@ def filter_detections_by_width(detections, min_w, max_w):
             if w < min_w or w >= max_w:
                 d_aux['gt_bboxes'].pop(i - j)
                 d_aux['gt_classes'].pop(i - j)
-                try:
-                    d_aux['pred_bboxes'].pop(i - j)
-                    d_aux['pred_classes'].pop(i - j)
-                    d_aux['confidences'].pop(i - j)
-                except IndexError:
-                    print('Pred bbox num {} of image {} was not removed'.format(i, d_aux['file']))
                 j += 1
         n_gt_bboxes += len(d_aux['gt_bboxes'])
-        fdetects.append(d_aux)
+        if len(d_aux['gt_bboxes']) > 0:  #####
+            fdetects.append(d_aux)
     print(n_gt_bboxes)
     return fdetects
 
@@ -100,10 +95,13 @@ def compute_iou(bbgt, bb):
 
 
 def voc_ap(rec, prec, use_07_metric=False):
-    """ ap = voc_ap(rec, prec, [use_07_metric])
-    Compute VOC AP given precision and recall.
-    If use_07_metric is true, uses the
-    VOC 07 11 point method (default:False).
+    """
+    Compute VOC AP given precision and recall. If use_07_metric is true, uses the VOC 07 11
+     point method (default:False). Usage: ap = voc_ap(rec, prec, [use_07_metric])
+    :param rec: recalls list
+    :param prec: precisions list
+    :param use_07_metric:
+    :return: average precision
     """
     if use_07_metric:
         # 11 point metric
@@ -137,21 +135,21 @@ def voc_ap(rec, prec, use_07_metric=False):
     return ap
 
 
-def match_gts_and_compute_prec_recall_ap(cls, detections, category_index,  iouthresh):
+def match_gts_and_compute_prec_recall_ap(cls, detections, category_index, iouthresh):
     """
-    INPUTS:
-    -BB: predicted bounding boxes
-    -BBGT: predicted bounding boxes, BBGT = R['bbox'].astype(float)
-    OUTPUTS:
-    -rec: recall
-    -prec: precision
-    -ap: average precision
-    A bounding box reported by an algorithm is considered
-    correct if its area intersection over union with a ground
-    truth bounding box is beyond 50%. If a lot of closely overlapping
-    bounding boxes hitting on a same ground truth, only one of
-    them is counted as correct, and all the others are treated as false alarms
+    A bounding box reported by an algorithm is considered correct if its area intersection over union with a ground
+    truth bounding box is beyond X%. If a lot of closely overlapping bounding boxes hitting on a same ground truth,
+    only one of them is counted as correct, and all the others are treated as false alarms.
+    :param cls:
+    :param detections:
+    :param category_index: python dictionary with indices of classes in categories dict. e.g.: {1: categories[0]}
+    :param iouthresh: threshold of intersection over union, above which detection is treated as truth
+    :return:
+        -rec: recall
+        -prec: precision
+        -ap: average precision
     """
+
     print('IoU threshold set to: {:.2f}'.format(iouthresh))
     GT_OBJECTS = {}
     BB = []
@@ -295,14 +293,14 @@ def plot_full_precision_recall(data, path, name="figure"):
 
 def compute_mean_average_precision(detections, categories, category_index, path, name="figure"):
     """
-    INPUTS:
-    -detections: python list of objects with fields: class_given_obj, confidences, bboxes
-    -name: python string, name of figure to save as pdf
-    OUTPUTS:
-    -mAP: float
-    For each class, we compute average precision (AP)
-    This score corresponds to the area under the precision-recall curve.
-    The mean of these numbers is the mAP.
+    For each class, we compute average precision (AP). This score corresponds to the area under the precision-recall
+    curve. The mean of these numbers is the mAP.
+    :param detections: python list of objects with fields: class_given_obj, confidences, bboxes
+    :param categories: python dictionary with number of classes and its labels, e.g.: [{'id': 1, 'name': 'sign'}]
+    :param category_index: python dictionary with indices of classes in categories dict. e.g.: {1: categories[0]}
+    :param path: python string, path to save figure in
+    :param name: python string, name of figure to save as pdf
+    :return: mean average precision (float)
     """
 
     results = []
@@ -313,7 +311,6 @@ def compute_mean_average_precision(detections, categories, category_index, path,
         class_name = category['name']
         rec, prec, ap = match_gts_and_compute_prec_recall_ap(category['id'], detections, category_index,
                                                              iouthresh=0.1)
-
         if rec is None:
             continue
         results.append({'class': class_name, 'precision': prec[-1], 'recall': rec[-1], 'ap': ap})
@@ -330,4 +327,3 @@ def compute_mean_average_precision(detections, categories, category_index, path,
     print(df)
     plot_full_precision_recall(plot_data, path, name)
     return mAP
-

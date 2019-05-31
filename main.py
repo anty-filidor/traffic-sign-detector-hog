@@ -116,7 +116,7 @@ def prepare_measurable_data(save_images=True):
 
     # process all images in folder
     print(colored("Processing:\n", 'red'))
-    for image_path in tqdm((test_image_paths[:20])):
+    for image_path in tqdm((test_image_paths[:25])):
 
         name = image_path.split('/')[6]
         image = cv2.imread(image_path)
@@ -125,17 +125,6 @@ def prepare_measurable_data(save_images=True):
         bb = (gt.loc[gt['file'] == name])
         classes = bb['class_id'].values.tolist()
         gt_bboxes = [tuple(l) for l in bb[['x1', 'y1', 'x2', 'y2']].values]
-
-        '''     
-<class 'list'> 900 dict_keys(['pred_classes', 'pred_bboxes', 'gt_bboxes', 'file_path', 'gt_classes', 'file', 'confidences']) 
-{'pred_classes': [3, 1],
-'pred_bboxes': [(736.1738348007202, 413.89012336730957, 768.1918287277222, 445.1045513153076), (742.1215391159058, 461.14187240600586, 765.3431367874146, 485.9738349914551)], 
-'gt_bboxes': [(742, 443, 765, 466), (742, 466, 764, 489), (737, 412, 769, 443)], 
-'file_path': '/media/arcos/Shared/Datasets/GermanTSDataset/Detection/00003.jpg', 
-'gt_classes': [1, 1, 3], 
-'file': '00003.jpg', 
-'confidences': [0.9937791, 0.88522387]} 
-     '''
 
         # perform detection
         sw.update_frame(image)
@@ -170,4 +159,4 @@ def prepare_measurable_data(save_images=True):
 
 
 # test_on_images()
-prepare_measurable_data(save_images=False)
+prepare_measurable_data(save_images=True)
